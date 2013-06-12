@@ -83,4 +83,16 @@ public class ConfigureActivity extends Activity {
 		updateLastRan();
 	}
 
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		updateUi();
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		updateUi();
+	}
 }

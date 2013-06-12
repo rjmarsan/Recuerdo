@@ -132,7 +132,7 @@ public class SchedulerReciever extends BroadcastReceiver {
 	
 	public static long getInterval(Context context) {
 		SharedPreferences prefs = context.getSharedPreferences(PROCESS_SHARED_PREFS, 0);
-		return prefs.getLong(INTERVAL, 20*60*1000);
+		return prefs.getLong(INTERVAL, 20*60*1000);//20*60*1000);
 	}
 	
 
