@@ -14,6 +14,7 @@ public class SchedulerReciever extends BroadcastReceiver {
 	public final static String PROCESS_SHARED_PREFS = SchedulerReciever.class.getPackage().toString() + ".PROCESS_SHARED_PREFS";
 	public final static String LASTSCANNED_SHARED_PREFS = SchedulerReciever.class.getPackage().toString() + ".LASTSCANNED_SHARED_PREFS";
 	public final static String TIME_OF_LAST_SCAN = SchedulerReciever.class.getPackage().toString() + ".LAST_SCAN";
+	public final static String NEXT_SCHEDULED_SCAN = SchedulerReciever.class.getPackage().toString() + ".NEXT_SCHEDULED_SCAN";
 	public final static String INTERVAL = SchedulerReciever.class.getPackage().toString() + ".INTERVAL";
 	public final static String ENABLED = SchedulerReciever.class.getPackage().toString() + ".ENABLED";
 	public final static String PAUSED = SchedulerReciever.class.getPackage().toString() + ".PAUSED";
@@ -40,12 +41,23 @@ public class SchedulerReciever extends BroadcastReceiver {
 		SharedPreferences prefs = context.getSharedPreferences(LASTSCANNED_SHARED_PREFS, 0);
 		Editor edit = prefs.edit();
 		edit.putLong(TIME_OF_LAST_SCAN, System.currentTimeMillis());
+		edit.putLong(NEXT_SCHEDULED_SCAN, System.currentTimeMillis()+getInterval(context));
+		edit.commit(); 
+	}
+	private static void setNextScheduledScan(Context context, long time) {
+		SharedPreferences prefs = context.getSharedPreferences(LASTSCANNED_SHARED_PREFS, 0);
+		Editor edit = prefs.edit();
+		edit.putLong(NEXT_SCHEDULED_SCAN, time);
 		edit.commit(); 
 	}
 	
 	public static long getLastScan(Context context) {
 		SharedPreferences prefs = context.getSharedPreferences(LASTSCANNED_SHARED_PREFS, 0);
 		return prefs.getLong(TIME_OF_LAST_SCAN, -1);
+	}
+	public static long getNextScan(Context context) {
+		SharedPreferences prefs = context.getSharedPreferences(LASTSCANNED_SHARED_PREFS, 0);
+		return prefs.getLong(NEXT_SCHEDULED_SCAN, -1);
 	}
 
 	
@@ -59,7 +71,6 @@ public class SchedulerReciever extends BroadcastReceiver {
 		startStopSelf(context, false);
 	}
 	public static void startStopSelf(Context context, boolean start) {
-		long repeatTime = getInterval(context);
         AlarmManager mgr=(AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         Intent i=new Intent(context, SchedulerReciever.class);
         PendingIntent pi=PendingIntent.getBroadcast(context, 0, i, 0);
@@ -67,19 +78,22 @@ public class SchedulerReciever extends BroadcastReceiver {
     	mgr.cancel(pi);
 
     	long now = System.currentTimeMillis();
-    	long pictureTime = getLastScan(context) + repeatTime;
-    	//if we missed this photo, skip it.
-    	if (now > pictureTime) {
-    		pictureTime = now + repeatTime;
+    	long scheduledTime = getNextScan(context);
+    	//if we missed this photo, skip it and schedule another soon.
+    	if (now > scheduledTime) {
+    		long repeatTime = getInterval(context);
+    		scheduledTime = now + repeatTime;
+    		Log.d("MemoMatic - Scheduler", "Missed the photo. new one in "+((repeatTime)/1000)+" seconds in the future: "+start);
+    		setNextScheduledScan(context, scheduledTime);
     	}
-		Log.d("MemoMatic - Configure", "Scheduling Picture for "+((pictureTime-now)/1000)+" seconds in the future: "+start);
+		Log.d("MemoMatic - Scheduler", "Scheduling Picture for "+((scheduledTime-now)/1000)+" seconds in the future: "+start);
 		if (isPaused(context) == true || isEnabled(context) == false) {
 			Log.d("MemoMatic - Scheduler", "either paused or disabled. not scheduling");
 			return;
 		}
         if (start) {
         	//mgr.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(), repeatTime, pi);
-        	mgr.set(AlarmManager.RTC, pictureTime, pi);
+        	mgr.set(AlarmManager.RTC, scheduledTime, pi);
         }
 
 	}

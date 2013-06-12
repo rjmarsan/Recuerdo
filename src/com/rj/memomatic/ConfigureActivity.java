@@ -1,12 +1,9 @@
 package com.rj.memomatic;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,14 +12,23 @@ import android.widget.TextView;
 public class ConfigureActivity extends Activity {
 	
 	TextView enableText;
+	TextView descriptionText;
 	TextView lastRan;
-
+	Typeface robotoThin;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_configure);
+		robotoThin = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
 		enableText = (TextView)findViewById(R.id.enabledisable);
-		updateText();
+		descriptionText = (TextView)findViewById(R.id.description);
+		lastRan = (TextView)findViewById(R.id.lastphoto);
+		enableText.setTypeface(robotoThin);
+		descriptionText.setTypeface(robotoThin);
+		lastRan.setTypeface(robotoThin);
+
+		updateUi();
 	}
 	
 	
@@ -56,7 +62,20 @@ public class ConfigureActivity extends Activity {
 	}
 	
 	void updateLastRan() {
-		
+		long now = System.currentTimeMillis();
+		long nextScan = SchedulerReciever.getNextScan(this);
+		long diff = (nextScan-now)/1000; //in seconds
+		if (diff < 60) {
+			lastRan.setText("Next photo in "+diff+" seconds");
+			return;
+		} 
+		diff = diff / 60;
+		if (diff < 60) {
+			lastRan.setText("Next photo in "+diff+" minutes");
+			return;
+		}
+		diff = diff / 60;
+		lastRan.setText("Next photo in "+diff+" hours");
 	}
 	
 	void updateUi() {
