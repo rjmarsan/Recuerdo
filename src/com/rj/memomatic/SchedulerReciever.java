@@ -160,7 +160,7 @@ public class SchedulerReciever extends BroadcastReceiver {
 	 */
 	public static int getInterval(Context context) {
 		SharedPreferences prefs = context.getSharedPreferences(PROCESS_SHARED_PREFS, 0);
-		return prefs.getInt(INTERVAL, 16);
+		return prefs.getInt(INTERVAL, 20);
 	}
 	
 	public static void setInterval(Context context, long value) {
