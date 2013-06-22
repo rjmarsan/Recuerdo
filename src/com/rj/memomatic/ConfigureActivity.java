@@ -20,7 +20,7 @@ public class ConfigureActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_configure);
-		robotoThin = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
+		robotoThin = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Thin.ttf");
 		enableText = (TextView)findViewById(R.id.enabledisable);
 		descriptionText = (TextView)findViewById(R.id.description);
 		lastRan = (TextView)findViewById(R.id.lastphoto);

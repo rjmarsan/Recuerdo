@@ -1,5 +1,8 @@
 package com.rj.memomatic;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -7,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.os.SystemClock;
 import android.util.Log;
 
 public class SchedulerReciever extends BroadcastReceiver {
@@ -64,6 +66,19 @@ public class SchedulerReciever extends BroadcastReceiver {
 	
 	
 	
+	public static long calculateNextScanTime(Context context) {
+		Calendar cal_target = Calendar.getInstance();
+		cal_target.add(Calendar.MINUTE, 20);
+		int minute = cal_target.get(Calendar.MINUTE);
+		minute = 20*(minute / 20);
+		cal_target.set(Calendar.MINUTE, minute);
+		
+		return cal_target.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
+	}
+	
+	
+	
+	
 	public static void startSelf(Context context) {
 		startStopSelf(context, true);
 	}
@@ -71,19 +86,20 @@ public class SchedulerReciever extends BroadcastReceiver {
 		startStopSelf(context, false);
 	}
 	public static void startStopSelf(Context context, boolean start) {
-        AlarmManager mgr=(AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        Intent i=new Intent(context, SchedulerReciever.class);
-        PendingIntent pi=PendingIntent.getBroadcast(context, 0, i, 0);
+        AlarmManager mgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        Intent i = new Intent(context, SchedulerReciever.class);
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
 
     	mgr.cancel(pi);
 
     	long now = System.currentTimeMillis();
     	long scheduledTime = getNextScan(context);
     	//if we missed this photo, skip it and schedule another soon.
+    	//ideally: schedule on the :00s, :20s and :40s.
+    	//maybe change the schedule if the person is away from home?
     	if (now > scheduledTime) {
-    		long repeatTime = getInterval(context);
-    		scheduledTime = now + repeatTime;
-    		Log.d("MemoMatic - Scheduler", "Missed the photo. new one in "+((repeatTime)/1000)+" seconds in the future: "+start);
+    		scheduledTime = calculateNextScanTime(context);
+    		Log.d("MemoMatic - Scheduler", "Missed the photo. new one in "+((scheduledTime-now)/1000)+" seconds in the future: "+start);
     		setNextScheduledScan(context, scheduledTime);
     	}
 		Log.d("MemoMatic - Scheduler", "Scheduling Picture for "+((scheduledTime-now)/1000)+" seconds in the future: "+start);
