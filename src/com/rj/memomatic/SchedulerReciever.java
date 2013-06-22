@@ -20,6 +20,7 @@ public class SchedulerReciever extends BroadcastReceiver {
 	public final static String INTERVAL = SchedulerReciever.class.getPackage().toString() + ".INTERVAL";
 	public final static String ENABLED = SchedulerReciever.class.getPackage().toString() + ".ENABLED";
 	public final static String PAUSED = SchedulerReciever.class.getPackage().toString() + ".PAUSED";
+	public final static String TIMER_ENABLED = SchedulerReciever.class.getPackage().toString() + ".TIMER_ENABLED";
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -88,10 +89,15 @@ public class SchedulerReciever extends BroadcastReceiver {
 	}
 	public static void startStopSelf(Context context, boolean start, boolean overrideSchedule) {
         AlarmManager mgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        
         Intent i = new Intent(context, SchedulerReciever.class);
         PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
+        
+        Intent timer_i = new Intent(context, TimerAlertReciever.class);
+        PendingIntent timer_pi = PendingIntent.getBroadcast(context, 0, timer_i, 0);
 
     	mgr.cancel(pi);
+    	mgr.cancel(timer_pi);
 
     	long now = System.currentTimeMillis();
     	long scheduledTime = getNextScan(context);
@@ -111,6 +117,7 @@ public class SchedulerReciever extends BroadcastReceiver {
         if (start) {
         	//mgr.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(), repeatTime, pi);
         	mgr.set(AlarmManager.RTC, scheduledTime, pi);
+        	mgr.set(AlarmManager.RTC, scheduledTime-5000, timer_pi);
         }
 
 	}
@@ -153,10 +160,8 @@ public class SchedulerReciever extends BroadcastReceiver {
 	 */
 	public static int getInterval(Context context) {
 		SharedPreferences prefs = context.getSharedPreferences(PROCESS_SHARED_PREFS, 0);
-		return prefs.getInt(INTERVAL, 20);
+		return prefs.getInt(INTERVAL, 16);
 	}
-	
-
 	
 	public static void setInterval(Context context, long value) {
 		SharedPreferences prefs = context.getSharedPreferences(PROCESS_SHARED_PREFS, 0);
@@ -164,6 +169,19 @@ public class SchedulerReciever extends BroadcastReceiver {
 		edit.putLong(INTERVAL, value);
 		edit.apply();
 	}
+	
+	public static boolean getTimerSoundEnabled(Context context) {
+		SharedPreferences prefs = context.getSharedPreferences(PROCESS_SHARED_PREFS, 0);
+		return prefs.getBoolean(TIMER_ENABLED, true);
+	}
+	
+	public static void setTimerSoundEnabled(Context context, boolean value) {
+		SharedPreferences prefs = context.getSharedPreferences(PROCESS_SHARED_PREFS, 0);
+		Editor edit = prefs.edit();
+		edit.putBoolean(TIMER_ENABLED, value);
+		edit.apply();
+	}
+	
 	
 	
 	
