@@ -43,6 +43,8 @@ public class ConfigureActivity extends Activity {
 			enableText.setTextColor(getResources().getColor(R.color.state_red));
 		}
 		
+		int interval_minutes = SchedulerReciever.getInterval(this);
+		descriptionText.setText(getResources().getString(R.string.config_description, interval_minutes));
 		
 		final Context context = this;
 		enableText.setOnClickListener(new OnClickListener() {

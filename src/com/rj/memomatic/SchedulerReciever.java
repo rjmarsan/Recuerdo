@@ -35,7 +35,7 @@ public class SchedulerReciever extends BroadcastReceiver {
 			e.printStackTrace();
 		}
 		
-		startSelf(context);
+		startSelf(context, true);
 	}
 	
 	
@@ -67,25 +67,26 @@ public class SchedulerReciever extends BroadcastReceiver {
 	
 	
 	public static long calculateNextScanTime(Context context) {
+		int minute_interval = getInterval(context);
 		Calendar cal_target = Calendar.getInstance();
-		cal_target.add(Calendar.MINUTE, 20);
+		cal_target.add(Calendar.MINUTE, minute_interval);
 		int minute = cal_target.get(Calendar.MINUTE);
-		minute = 20*(minute / 20);
+		minute = minute_interval*(minute / minute_interval);
 		cal_target.set(Calendar.MINUTE, minute);
 		
-		return cal_target.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
+		return cal_target.getTimeInMillis();
 	}
 	
 	
 	
 	
-	public static void startSelf(Context context) {
-		startStopSelf(context, true);
+	public static void startSelf(Context context, boolean overrideSchedule) {
+		startStopSelf(context, true, overrideSchedule);
 	}
 	public static void stopSelf(Context context) {
-		startStopSelf(context, false);
+		startStopSelf(context, false, false);
 	}
-	public static void startStopSelf(Context context, boolean start) {
+	public static void startStopSelf(Context context, boolean start, boolean overrideSchedule) {
         AlarmManager mgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         Intent i = new Intent(context, SchedulerReciever.class);
         PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
@@ -97,7 +98,7 @@ public class SchedulerReciever extends BroadcastReceiver {
     	//if we missed this photo, skip it and schedule another soon.
     	//ideally: schedule on the :00s, :20s and :40s.
     	//maybe change the schedule if the person is away from home?
-    	if (now > scheduledTime) {
+    	if (now > scheduledTime || overrideSchedule) {
     		scheduledTime = calculateNextScanTime(context);
     		Log.d("MemoMatic - Scheduler", "Missed the photo. new one in "+((scheduledTime-now)/1000)+" seconds in the future: "+start);
     		setNextScheduledScan(context, scheduledTime);
@@ -145,10 +146,14 @@ public class SchedulerReciever extends BroadcastReceiver {
 
 
 	
-	
-	public static long getInterval(Context context) {
+	/**
+	 * The interval between photos, in minutes.
+	 * @param context
+	 * @return
+	 */
+	public static int getInterval(Context context) {
 		SharedPreferences prefs = context.getSharedPreferences(PROCESS_SHARED_PREFS, 0);
-		return prefs.getLong(INTERVAL, 20*60*1000);//20*60*1000);
+		return prefs.getInt(INTERVAL, 20);
 	}
 	
 
@@ -173,14 +178,14 @@ public class SchedulerReciever extends BroadcastReceiver {
 	public static void actionUnpause(Context context) {
 		Log.d("MemoMatic - Scheduler", "Unpausing");
 		setPaused(context, false);
-		startSelf(context);
+		startSelf(context, false);
 	}
 
 	
 	public static void actionEnable(Context context) {
 		Log.d("MemoMatic - Scheduler", "Enabling");
 		setEnabled(context, true);
-		startSelf(context);
+		startSelf(context, true);
 	}
 	
 	public static void actionDisable(Context context) {
