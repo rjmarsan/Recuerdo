@@ -1,0 +1,21 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/PaddedCard"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+	android:clipChildren="false"
+    android:clipToPadding="false"
+            >
+
+    <ListView 
+        android:id="@+id/photo_intervals"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:dividerHeight="0px"
+        android:divider="@null"
+        android:scrollbars="none"
+        android:background="@android:color/transparent"
+        android:listSelector="@android:color/transparent"
+        ></ListView>
+    
+</LinearLayout>

@@ -23,10 +23,42 @@
         android:text="Take Photo" />
 
 </RelativeLayout> -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/PaddedCard"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
-<LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent" style="@style/PaddedCard"
-  xmlns:android="http://schemas.android.com/apk/res/android">
-	<TextView android:id="@+id/description" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/config_description" style="@style/MediumOverlayText" />
-	<TextView android:id="@+id/enabledisable" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/config_off" style="@style/MediumOverlayText" android:focusable="true" />
-	<TextView android:id="@+id/lastphoto" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" style="@style/MediumOverlayText"  />
+    <TextView
+        android:id="@+id/description"
+        style="@style/MediumOverlayText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/config_description"
+        android:textColor="@drawable/text_white_colorlist" />
+
+    <TextView
+        android:id="@+id/enabledisable"
+        style="@style/MediumOverlayText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@drawable/text_green_colorlist"
+        android:text="@string/config_off" />
+
+    <TextView
+        android:id="@+id/lastphoto"
+        style="@style/MediumOverlayText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@drawable/text_white_colorlist"
+        android:text="" />
+    
+    <TextView
+        android:id="@+id/changeinterval"
+        style="@style/MediumOverlayText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@drawable/text_white_colorlist"
+        android:text="@string/change_interval" />
+    
 </LinearLayout>

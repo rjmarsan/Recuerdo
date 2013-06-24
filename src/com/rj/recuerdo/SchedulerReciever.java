@@ -165,10 +165,10 @@ public class SchedulerReciever extends BroadcastReceiver {
 		return prefs.getInt(INTERVAL, 20);
 	}
 	
-	public static void setInterval(Context context, long value) {
+	public static void setInterval(Context context, int value) {
 		SharedPreferences prefs = context.getSharedPreferences(PROCESS_SHARED_PREFS, 0);
 		Editor edit = prefs.edit();
-		edit.putLong(INTERVAL, value);
+		edit.putInt(INTERVAL, value);
 		edit.apply();
 	}
 	

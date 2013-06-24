@@ -4,4 +4,5 @@
     <string name="config_description">Recuerdo takes a photo every %d minutes</string>
     <string name="config_off">Turned Off. Tap to enable</string>
     <string name="config_on">Turned On. Tap to disable</string>
+    <string name="change_interval">Change photo interval</string>
 </resources>

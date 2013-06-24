@@ -2,6 +2,7 @@ package com.rj.recuerdo;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,9 +12,12 @@ import android.widget.TextView;
 
 public class ConfigureActivity extends Activity {
 	
+	public final static int ACTIVITY_INTERVAL = 11;
+	
 	TextView enableText;
 	TextView descriptionText;
 	TextView lastRan;
+	TextView changeInterval;
 	Typeface robotoThin;
 	
 	@Override
@@ -24,32 +28,59 @@ public class ConfigureActivity extends Activity {
 		enableText = (TextView)findViewById(R.id.enabledisable);
 		descriptionText = (TextView)findViewById(R.id.description);
 		lastRan = (TextView)findViewById(R.id.lastphoto);
+		changeInterval = (TextView)findViewById(R.id.changeinterval);
 		enableText.setTypeface(robotoThin);
 		descriptionText.setTypeface(robotoThin);
 		lastRan.setTypeface(robotoThin);
+		changeInterval.setTypeface(robotoThin);
 
+		initUi();
 		updateUi();
 		
 		
 	}
 	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (ACTIVITY_INTERVAL == requestCode) {
+			int minutes = data.getIntExtra("minutes", SchedulerReciever.getInterval(this));
+			SchedulerReciever.setInterval(this, minutes);
+			Log.d("MemoMatic - Configure", "new interval: "+minutes+" minutes");
+			SchedulerReciever.startSelf(this, true);
+			updateUi();
+		}
+	}
+	
+	void initUi() {
+		descriptionText.setFocusable(true);
+		descriptionText.setClickable(true);
+		
+		changeInterval.setFocusable(true);
+		changeInterval.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startActivityForResult(new Intent(ConfigureActivity.this, IntervalPickerActivity.class), ACTIVITY_INTERVAL);
+			}
+		});
+	}
 	
 	void updateText() {
 		final boolean enabled = SchedulerReciever.isEnabled(this);
 		
 		if (enabled) {
 			enableText.setText(R.string.config_on);
-			enableText.setTextColor(getResources().getColor(R.color.state_green));
+			enableText.setTextColor(getResources().getColorStateList(R.drawable.text_green_colorlist));
 		} else {
 			enableText.setText(R.string.config_off);
-			enableText.setTextColor(getResources().getColor(R.color.state_red));
+			enableText.setTextColor(getResources().getColorStateList(R.drawable.text_red_colorlist));
 		}
 		
 		int interval_minutes = SchedulerReciever.getInterval(this);
 		descriptionText.setText(getResources().getString(R.string.config_description, interval_minutes));
 		
 		final Context context = this;
-		enableText.setOnClickListener(new OnClickListener() {
+		descriptionText.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (enabled) {
@@ -72,7 +103,13 @@ public class ConfigureActivity extends Activity {
 	void updateLastRan() {
 		long now = System.currentTimeMillis();
 		long nextScan = SchedulerReciever.getNextScan(this);
+		boolean enabled = SchedulerReciever.isEnabled(this);
 		long diff = (nextScan-now)/1000; //in seconds
+		if (diff < 0 || enabled == false) {
+			lastRan.setVisibility(View.INVISIBLE);
+		} else {
+			lastRan.setVisibility(View.VISIBLE);
+		}
 		if (diff < 60) {
 			lastRan.setText("Next photo in "+diff+" seconds");
 			return;

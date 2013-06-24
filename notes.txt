@@ -1,0 +1,4 @@
+Some features I have in mind:
+Change the photo interval (this is easy to do, but making a UI for it is terrible)
+Auto detect when you're at home/work vs. out, and have different intervals for each (Latitude has this knowledge, but not the Latitude API)
+Scaling down images so they can be taken more often, but not take up as much space (and maybe having a buffer where bad photos are deleted)
