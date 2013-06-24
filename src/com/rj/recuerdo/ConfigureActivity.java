@@ -43,7 +43,7 @@ public class ConfigureActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (ACTIVITY_INTERVAL == requestCode) {
+		if (ACTIVITY_INTERVAL == requestCode && resultCode == RESULT_OK) {
 			int minutes = data.getIntExtra("minutes", SchedulerReciever.getInterval(this));
 			SchedulerReciever.setInterval(this, minutes);
 			Log.d("MemoMatic - Configure", "new interval: "+minutes+" minutes");
@@ -53,8 +53,8 @@ public class ConfigureActivity extends Activity {
 	}
 	
 	void initUi() {
-		descriptionText.setFocusable(true);
-		descriptionText.setClickable(true);
+		enableText.setFocusable(true);
+		enableText.setClickable(true);
 		
 		changeInterval.setFocusable(true);
 		changeInterval.setOnClickListener(new OnClickListener() {
@@ -80,7 +80,7 @@ public class ConfigureActivity extends Activity {
 		descriptionText.setText(getResources().getString(R.string.config_description, interval_minutes));
 		
 		final Context context = this;
-		descriptionText.setOnClickListener(new OnClickListener() {
+		enableText.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (enabled) {
