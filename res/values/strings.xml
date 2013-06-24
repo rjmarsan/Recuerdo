@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MemoMatic</string>
-    <string name="config_description">MemoMatic takes a photo every %d minutes</string>
+    <string name="app_name">Recuerdo</string>
+    <string name="config_description">Recuerdo takes a photo every %d minutes</string>
     <string name="config_off">Turned Off. Tap to enable</string>
     <string name="config_on">Turned On. Tap to disable</string>
 </resources>

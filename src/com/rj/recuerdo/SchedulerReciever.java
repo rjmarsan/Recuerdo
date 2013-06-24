@@ -1,4 +1,4 @@
-package com.rj.memomatic;
+package com.rj.recuerdo;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -70,7 +70,9 @@ public class SchedulerReciever extends BroadcastReceiver {
 	public static long calculateNextScanTime(Context context) {
 		int minute_interval = getInterval(context);
 		Calendar cal_target = Calendar.getInstance();
-		cal_target.add(Calendar.MINUTE, minute_interval);
+		cal_target.add(Calendar.MINUTE, minute_interval+1);
+		cal_target.set(Calendar.SECOND, 0);
+		cal_target.set(Calendar.MILLISECOND, 0);
 		int minute = cal_target.get(Calendar.MINUTE);
 		minute = minute_interval*(minute / minute_interval);
 		cal_target.set(Calendar.MINUTE, minute);
@@ -116,8 +118,8 @@ public class SchedulerReciever extends BroadcastReceiver {
 		}
         if (start) {
         	//mgr.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(), repeatTime, pi);
-        	mgr.set(AlarmManager.RTC, scheduledTime, pi);
-        	mgr.set(AlarmManager.RTC, scheduledTime-5000, timer_pi);
+        	mgr.set(AlarmManager.RTC_WAKEUP, scheduledTime, pi);
+        	mgr.set(AlarmManager.RTC_WAKEUP, scheduledTime-5000, timer_pi);
         }
 
 	}

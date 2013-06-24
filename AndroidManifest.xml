@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.rj.memomatic"
+    package="com.rj.recuerdo"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
         <activity
-            android:name="com.rj.memomatic.ConfigureActivity"
+            android:name="com.rj.recuerdo.ConfigureActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
             <intent-filter>
@@ -24,9 +24,9 @@
             </intent-filter>
         </activity>
         
-		<receiver  android:name=".SchedulerReciever"></receiver>
-		<receiver  android:name=".TimerAlertReciever"></receiver>
-		<receiver android:name=".BootupReceiver"> 
+		<receiver  android:name="com.rj.recuerdo.SchedulerReciever"></receiver>
+		<receiver  android:name="com.rj.recuerdo.TimerAlertReciever"></receiver>
+		<receiver android:name="com.rj.recuerdo.BootupReceiver"> 
             <intent-filter> 
                 <action android:name="com.google.glass.action.DON_STATE" /> 
             </intent-filter> 

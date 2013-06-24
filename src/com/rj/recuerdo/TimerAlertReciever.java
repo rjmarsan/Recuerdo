@@ -1,4 +1,4 @@
-package com.rj.memomatic;
+package com.rj.recuerdo;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
