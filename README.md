@@ -13,3 +13,7 @@ A small app to wake up glass every 5-60 minutes and take a photo. Simple, yet su
 
 ## How to use it
 The Mirrors API does not support this behavior, so this app can only be installed via sideloading. I recommend Launchy (https://github.com/kaze0/launchy) for using sideloaded apps.
+* Turn on debug mode (Settings -> Device Info -> Turn On Debug Mode)
+* Install launchy via ADB
+* Install Recuerdo via ADB
+* Launch Recuerdo and enable it
